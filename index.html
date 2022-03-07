@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> my project</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <section>
+        <form onsubmit="event.preventDefault()" id="addForm">
+            <p> <input type="text" id="title" placeholder="Title"></p>
+
+            <p>
+                <textarea id="description">
+
+            </textarea>
+            </p>
+            <p> <input id="date" type="date"> <input id="time" type="time"></p>
+            <button> Submit</button>
+
+        </form>
+
+        <aside id="results">
+           
+        </aside>
+    </section>
+    <script>
+        const tasks = [];
+
+        const form = document.querySelector('form#addForm');
+        form.addEventListener('submit', (event) => {
+            const title = document.querySelector('input#title').value;
+            const description = document.querySelector('textarea#description').value;
+            const date = document.querySelector('input#date').value;
+            const time = document.querySelector('input#time').value;
+            const ts = date + ' ' + time;
+            const timeInMillSeconds = new Date(ts).getTime();
+            addTask(title, description, timeInMillSeconds);
+        });
+
+        function addTask(title, description, time) {
+            const task = {
+                title,
+                time,
+                description,
+                completed: false,
+                isExpired: (timeInMillSeconds) => {
+                    return new Date().getTime() > timeInMillSeconds;
+                }
+            };
+            tasks.push(task);
+            showTasks();
+        }
+
+    function showTasks(){
+        let bumbum = '';
+        for(let t of tasks){
+            const ts = new Date(t.time).toUTCString();
+            bumbum += `<div>
+                 <h4>${t.title}</h4>
+                 <h6>${t.description}</h6>
+                 <h6>${ts}</h6>
+                 <h6>${t.isExpired() ? 'Expired' : 'Active'}</h6>
+                </div>`;
+        }
+        document.querySelector('aside#results').innerHTML = bumbum;
+
+    }
+
+
+
+    </script>
+</body>
+
+</html>
